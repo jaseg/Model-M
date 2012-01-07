@@ -49,9 +49,15 @@ module blind_shaft(){
 }
 
 module shaft(){
-	intersection(){
-		cylinder(h=100,r=SHAFT_X/2);
-		translate([-SHAFT_X/2,-SHAFT_Y/2,0]) cube([SHAFT_X,SHAFT_Y,100]);
+	translate([0,0,-9]) difference(){
+		intersection(){
+			cylinder(h=100,r=SHAFT_X/2,$fs=0.3);
+			translate([-SHAFT_X/2,-SHAFT_Y/2,0]) cube([SHAFT_X,SHAFT_Y,100]);
+		}
+		intersection(){
+			cylinder(h=100,r=SHAFT_X/2-1,$fs=0.3);
+			translate([-SHAFT_X/2+1,-SHAFT_Y/2+1,0]) cube([SHAFT_X-2,SHAFT_Y-2,100]);
+		}
 	}
 }
 
@@ -70,9 +76,15 @@ difference(){
 	keycap();
 	difference(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
-		translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) union(){
-			guard();
-			shaft();
-		}
+		translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) guard();
+	}
+}
+intersection(){
+	union(){
+		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
+		translate([-50,-50,-99.9]) cube([100,100,100]);
+	}
+	translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) union(){
+		shaft();
 	}
 }
