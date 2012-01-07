@@ -16,6 +16,15 @@ INNER_GUARD_RADIUS=6.5;
 OUTER_GUARD_RADIUS=7.5;
 SHAFT_X=8.0;
 SHAFT_Y=6.0;
+SHAFT_LENGTH=9.0;
+SHAFT_THICKNESS=1.0;
+SHAFT_CLIP_WIDTH=3.0;
+SHAFT_CLIP_THICKNESS=0.75;
+SHAFT_CLIP_HEIGHT=2.0;
+SHAFT_CLIP_SLOPE_DEPTH=1.0;
+SHAFT_CLIP_ANGLE=45;
+SHAFT_END_CUTOUT_HEIGHT=1.5;
+SHAFT_LARGE_SLOT_TO_BASE=1.5;
 WallThickness=0.75;
 ClipWidth=2.2;
 ClipDepth=0.75;
@@ -49,15 +58,25 @@ module blind_shaft(){
 }
 
 module shaft(){
-	translate([0,0,-9]) difference(){
-		intersection(){
-			cylinder(h=100,r=SHAFT_X/2,$fs=0.3);
-			translate([-SHAFT_X/2,-SHAFT_Y/2,0]) cube([SHAFT_X,SHAFT_Y,100]);
+	translate([0,0,-SHAFT_LENGTH]) difference(){
+		union(){
+			difference(){
+				intersection(){
+					cylinder(h=100,r=SHAFT_X/2,$fs=0.3);
+					translate([-SHAFT_X/2,-SHAFT_Y/2,0]) cube([SHAFT_X,SHAFT_Y,100]);
+				}
+				intersection(){
+					cylinder(h=100,r=SHAFT_X/2-SHAFT_THICKNESS,$fs=0.3);
+					translate([-SHAFT_X/2+SHAFT_THICKNESS,-SHAFT_Y/2+SHAFT_THICKNESS,0]) cube([SHAFT_X-2*SHAFT_THICKNESS,SHAFT_Y-2*SHAFT_THICKNESS,100]);
+				}
+			}
+			translate([-SHAFT_CLIP_WIDTH/2, -SHAFT_CLIP_THICKNESS-SHAFT_Y/2,0]) cube([SHAFT_CLIP_WIDTH/2, SHAFT_CLIP_THICKNESS,SHAFT_CLIP_HEIGHT]);
+			translate([-SHAFT_CLIP_WIDTH/2, SHAFT_Y/2,0]) cube([SHAFT_CLIP_WIDTH/2, SHAFT_CLIP_THICKNESS,SHAFT_CLIP_HEIGHT]);
 		}
-		intersection(){
-			cylinder(h=100,r=SHAFT_X/2-1,$fs=0.3);
-			translate([-SHAFT_X/2+1,-SHAFT_Y/2+1,0]) cube([SHAFT_X-2,SHAFT_Y-2,100]);
-		}
+		translate([-SHAFT_CLIP_WIDTH/2, -SHAFT_CLIP_THICKNESS-SHAFT_Y/2+SHAFT_CLIP_SLOPE_DEPTH,0]) rotate(a=90+SHAFT_CLIP_ANGLE,v=[1,0,0]) cube([SHAFT_CLIP_WIDTH/2,100,100]);
+		translate([-SHAFT_CLIP_WIDTH/2, SHAFT_Y/2+SHAFT_CLIP_THICKNESS-SHAFT_CLIP_SLOPE_DEPTH,0]) mirror([0,1,0]) rotate(a=90+SHAFT_CLIP_ANGLE,v=[1,0,0]) cube([SHAFT_CLIP_WIDTH/2,100,100]);
+		translate([0,-50,0]) cube([100,100,SHAFT_END_CUTOUT_HEIGHT]);
+		translate([0,-SHAFT_Y/2+SHAFT_THICKNESS,0]) cube([100,SHAFT_Y-SHAFT_THICKNESS*2,SHAFT_LENGTH+SHAFT_LARGE_SLOT_TO_BASE]);
 	}
 }
 
