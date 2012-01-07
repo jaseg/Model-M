@@ -8,7 +8,10 @@ FLZ=14.0;
 H=12.75;
 CYL_OFF_Z=50;
 CYL_DEPTH=0.75;
-
+CLIP_X=2;
+CLIP_Y=0.75;
+CLIP_H=3*CLIP_Y;
+CORNER_RADIUS=2;
 
 WallThickness=0.75;
 ClipWidth=2.2;
@@ -22,7 +25,8 @@ beta=asin(H/FLZ);
 gamma=90-asin((0.5*(AY-BY))/EZ);
 
 module keycap(){
-	scale([AX/(AX+1+2),AY/(AY+2+0.01),H/(H+0.01+1)])
+	scale([AX/(AX+2*CORNER_RADIUS),AY/(AY+2*CORNER_RADIUS),H/(H+2*CORNER_RADIUS)])
+	translate([CORNER_RADIUS,CORNER_RADIUS,0.01])
 	minkowski(){
 		difference(){
 			cube([AX,AY,H]);
@@ -32,10 +36,20 @@ module keycap(){
 			translate([0,AY/2,EZ+CYL_OFF_Z]) rotate(a=90-alpha,v=[0,1,0]) cylinder(h=100,center=true,r=CYL_OFF_Z+CYL_DEPTH,$fa=1);
 			translate([AX,0,0]) rotate(a=beta-90,v=[0,1,0]) cube([100,100,100]);
 		}
-		cylinder(h=0.01,r=2,$fs=0.6);
+		cylinder(h=0.01,r=CORNER_RADIUS,$fs=0.6);
 		//rotate(a=90,v=[1,0,0]) cylinder(h=0.01,r=1,$fs=0.3);
 	}
 }
+
+module clip(){
+	difference(){
+		cube([CLIP_X,CLIP_Y,CLIP_H]);
+		translate([0,CLIP_Y,0]) rotate(a=asin(CLIP_Y/CLIP_H),v=[1,0,0]) cube([100,100,100]);
+	}
+}
+
+translate([(AX-CLIP_X)/2,WallThickness,0]) clip();
+translate([0,AY,0]) mirror([0,1,0]) translate([(AX-CLIP_X)/2,WallThickness,0]) clip();
 
 difference(){
 	keycap();
