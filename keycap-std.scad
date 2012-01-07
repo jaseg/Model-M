@@ -7,7 +7,7 @@ EZ=11.0;
 FLZ=14.0;
 H=12.75;
 CYL_OFF_Z=50;
-CYL_DEPTH=0.75;
+CYL_DEPTH=0.1;
 CLIP_X=2;
 CLIP_Y=0.75;
 CLIP_H=3*CLIP_Y;
@@ -25,7 +25,7 @@ beta=asin(H/FLZ);
 gamma=90-asin((0.5*(AY-BY))/EZ);
 
 module keycap(){
-	scale([AX/(AX+2*CORNER_RADIUS),AY/(AY+2*CORNER_RADIUS),H/(H+2*CORNER_RADIUS)])
+	scale([AX/(AX+2*CORNER_RADIUS),AY/(AY+2*CORNER_RADIUS),1])
 	translate([CORNER_RADIUS,CORNER_RADIUS,0.01])
 	minkowski(){
 		difference(){
