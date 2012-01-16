@@ -1,12 +1,15 @@
 //measures are in millimeters
-AY=23.0;
+//(feel free to cocnvert them to attoparsecs)
+AY=50.5;
 AX=19.0;
-BY=18.0;
+BY=45.5;
 BLX=14.5;
 EZ=11.0;
 FLZ=14.0;
 H=12.75;
-CYL_OFF_Z=70;
+SHAFT_OFF_Y=33.0;
+BLIND_SHAFT_OFF_Y=9.0;
+CYL_OFF_Z=200;
 CYL_DEPTH=0.1;
 CLIP_X=2;
 CLIP_Y=0.75;
@@ -14,8 +17,8 @@ CLIP_H=3*CLIP_Y;
 CORNER_RADIUS=2;
 INNER_GUARD_RADIUS=6.5;
 OUTER_GUARD_RADIUS=7.5;
-BLIND_SHAFT_OUTER_DIAMETER=4.85
-BLIND_SHAFT_INNER_DIAMETER=1.85
+BLIND_SHAFT_OUTER_DIAMETER=4.0;
+BLIND_SHAFT_INNER_DIAMETER=2.0;
 SHAFT_X=8.0;
 SHAFT_Y=6.0;
 SHAFT_LENGTH=9.0;
@@ -70,7 +73,10 @@ module keycap(){
 }
 
 module blind_shaft(){
-
+	translate([0,0,-SHAFT_LENGTH]) difference(){
+		cylinder(r=BLIND_SHAFT_OUTER_DIAMETER/2,h=100,$fs=0.3);
+		cylinder(r=BLIND_SHAFT_INNER_DIAMETER/2,h=100,$fs=0.3);
+	}
 }
 
 module shaft(){
@@ -135,7 +141,6 @@ module shaft(){
 module guard(){
 	difference(){
 		union(){
-			cube([STRUT_THICKNESS,100,100],center=true);
 			cube([100,STRUT_THICKNESS,100],center=true);
 			cylinder(r=OUTER_GUARD_RADIUS,h=100);
 		}
@@ -153,7 +158,15 @@ difference(){
 	keycap();
 	difference(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
-		translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) guard();
+		translate([OUTER_GUARD_RADIUS+WallThickness,0,0]){
+			translate([0,SHAFT_OFF_Y]) guard();
+			translate([0,BLIND_SHAFT_OFF_Y]) guard();
+			difference(){
+				 cube([STRUT_THICKNESS,100,100],center=true);
+				 translate([0,SHAFT_OFF_Y]) cube([100,2*OUTER_GUARD_RADIUS,100],center=true);
+				 translate([0,BLIND_SHAFT_OFF_Y]) cube([100,2*OUTER_GUARD_RADIUS,100],center=true);
+			}
+		}
 	}
 }
 intersection(){
@@ -161,7 +174,8 @@ intersection(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
 		translate([-50,-50,-99.9]) cube([100,100,100]);
 	}
-	translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) union(){
-		shaft();
+	translate([OUTER_GUARD_RADIUS+WallThickness,0,0]){
+		translate([0,SHAFT_OFF_Y]) shaft();
+		translate([0,BLIND_SHAFT_OFF_Y]) blind_shaft();
 	}
 }
