@@ -1,16 +1,16 @@
 //measures are in millimeters
 //(feel free to cocnvert them to attoparsecs)
-AY=50.5;
-AX=19.0;
-BY=45.5;
-BLX=14.5;
+AY=18.0;
+AX=41.0;
+BY=13.0;
+BLX=33;
 EZ=11.0;
-FLZ=14.0;
+FLZ=15.0;
 H=12.75;
-SHAFT_OFF_Y=33.0;
-BLIND_SHAFT_OFF_Y=9.0;
-CYL_OFF_Z=200;
-CYL_DEPTH=0.1;
+SLOPE_X=AX/2;
+SLOPE_Z=2.0;
+CYL_OFF_Z=40;
+CYL_DEPTH=1;
 CLIP_X=2;
 CLIP_Y=0.75;
 CLIP_H=3*CLIP_Y;
@@ -41,7 +41,10 @@ STRUT_HEIGHT=3;
 STRUT_SPACING=1;
 SHAFT_SPRING_HOLDER_NIPPLE_HEIGHT=1;
 SHAFT_SPRING_HOLDER_NIPPLE_RADIUS=0.75;
-
+SHAFT_OFF_Y=AY/2;
+SHAFT_OFF_X=1.65+INNER_GUARD_RADIUS;
+BLIND_SHAFT_OFF_Y=AY/2;
+BLIND_SHAFT_OFF_X=1.65+19+OUTER_GUARD_RADIUS;
 SHAFT_SMALL_SLOT_BEVEL=0.5;
 
 WallThickness=0.75;
@@ -141,7 +144,7 @@ module shaft(){
 module guard(){
 	difference(){
 		union(){
-			cube([100,STRUT_THICKNESS,100],center=true);
+			cube([STRUT_THICKNESS,100,100],center=true);
 			cylinder(r=OUTER_GUARD_RADIUS,h=100);
 		}
 		difference(){
@@ -158,24 +161,23 @@ difference(){
 	keycap();
 	difference(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
-		translate([OUTER_GUARD_RADIUS+WallThickness,0,0]){
-			translate([0,SHAFT_OFF_Y]) guard();
-			translate([0,BLIND_SHAFT_OFF_Y]) guard();
-			difference(){
-				 cube([STRUT_THICKNESS,100,100],center=true);
-				 translate([0,SHAFT_OFF_Y]) cube([100,2*OUTER_GUARD_RADIUS-WallThickness,100],center=true);
-				 translate([0,BLIND_SHAFT_OFF_Y]) cube([100,2*OUTER_GUARD_RADIUS-WallThickness,100],center=true);
-			}
+		translate([SHAFT_OFF_X,SHAFT_OFF_Y]) guard();
+		translate([BLIND_SHAFT_OFF_X,BLIND_SHAFT_OFF_Y]) guard();
+		difference(){
+			 translate([0,SHAFT_OFF_Y]) cube([100,STRUT_THICKNESS,100],center=true);
+			 translate([SHAFT_OFF_X,SHAFT_OFF_Y]) cube([2*OUTER_GUARD_RADIUS-WallThickness,100,100],center=true);
+			 translate([BLIND_SHAFT_OFF_X,BLIND_SHAFT_OFF_Y]) cube([2*OUTER_GUARD_RADIUS-WallThickness,100,100],center=true);
 		}
 	}
+	translate([AX-SLOPE_X,0]) rotate(a=[0,-atan(SLOPE_Z/SLOPE_X),0]) translate([-50,-50,-99.9]) cube([100,100,100]);	
 }
 intersection(){
 	union(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
 		translate([-50,-50,-99.9]) cube([100,100,100]);
 	}
-	translate([OUTER_GUARD_RADIUS+WallThickness,0,0]){
-		translate([0,SHAFT_OFF_Y]) shaft();
-		translate([0,BLIND_SHAFT_OFF_Y]) blind_shaft();
+	union(){
+		translate([SHAFT_OFF_X,SHAFT_OFF_Y]) shaft();
+		translate([BLIND_SHAFT_OFF_X,BLIND_SHAFT_OFF_Y]) blind_shaft();
 	}
 }
