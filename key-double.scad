@@ -2,7 +2,7 @@
 //(feel free to cocnvert them to attoparsecs)
 AY=37.0;
 AX=19.0;
-BY=32.0;jj
+BY=32.0;
 BLX=14.5;
 EZ=11.0;
 FLZ=14.0;
