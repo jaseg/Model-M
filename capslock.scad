@@ -1,7 +1,9 @@
 //measures are in millimeters
-AY=23.0;
+AY=25.0;
 AX=19.0;
-BY=18.0;
+EXTRA_Y=8.0;
+EXTRA_Z=5.5;
+BY=20.0;
 BLX=14.5;
 EZ=11.0;
 FLZ=14.0;
@@ -14,6 +16,7 @@ CLIP_H=3*CLIP_Y;
 CORNER_RADIUS=2;
 INNER_GUARD_RADIUS=6.5;
 OUTER_GUARD_RADIUS=7.5;
+SHAFT_OFF_Y=15.0;
 SHAFT_X=8.0;
 SHAFT_Y=6.0;
 SHAFT_LENGTH=9.0;
@@ -36,7 +39,6 @@ STRUT_HEIGHT=3;
 STRUT_SPACING=1;
 SHAFT_SPRING_HOLDER_NIPPLE_HEIGHT=1;
 SHAFT_SPRING_HOLDER_NIPPLE_RADIUS=0.75;
-
 SHAFT_SMALL_SLOT_BEVEL=0.5;
 
 WallThickness=0.75;
@@ -55,15 +57,21 @@ module keycap(){
 	translate([CORNER_RADIUS,CORNER_RADIUS,0.01])
 	minkowski(){
 		difference(){
-			cube([AX,AY,H]);
-			rotate(a=gamma,v=[1,0,0]) cube([100,100,100]);
-			translate([0,AY,0]) rotate(a=90-gamma,v=[1,0,0]) cube([100,100,100]);
+			union(){
+				difference(){
+					cube([AX,AY,H]);
+					rotate(a=gamma,v=[1,0,0]) cube([100,100,100]);
+					translate([0,AY,0]) rotate(a=90-gamma,v=[1,0,0]) cube([100,100,100]);
+				}
+				translate([0, BY+(AY-BY)/2, 0]) cube([AX,(AY-BY)/2+EXTRA_Y,EXTRA_Z]);
+			}
+			translate([0,AY+EXTRA_Y,0]) rotate(a=90-gamma,v=[1,0,0]) cube([100,100,100]);
 			translate([0,0,EZ]) rotate(a=-alpha,v=[0,1,0]) translate([-50,0,0]) cube([100,100,100]);
 			translate([0,AY/2,EZ+CYL_OFF_Z]) rotate(a=90-alpha,v=[0,1,0]) cylinder(h=100,center=true,r=CYL_OFF_Z+CYL_DEPTH,$fa=1);
 			translate([AX,0,0]) rotate(a=beta-90,v=[0,1,0]) cube([100,100,100]);
 		}
 		cylinder(h=0.01,r=CORNER_RADIUS,$fs=0.6);
-		//rotate(a=90,v=[1,0,0]) cylinder(h=0.01,r=1,$fs=0.3);
+		////rotate(a=90,v=[1,0,0]) cylinder(h=0.01,r=1,$fs=0.3);
 	}
 }
 
@@ -151,7 +159,7 @@ difference(){
 	keycap();
 	difference(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
-		translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) guard();
+		translate([OUTER_GUARD_RADIUS+WallThickness,SHAFT_OFF_Y]) guard();
 	}
 }
 intersection(){
@@ -159,7 +167,7 @@ intersection(){
 		translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
 		translate([-50,-50,-99.9]) cube([100,100,100]);
 	}
-	translate([OUTER_GUARD_RADIUS+WallThickness,AY/2]) union(){
+	translate([OUTER_GUARD_RADIUS+WallThickness,SHAFT_OFF_Y]) union(){
 		shaft();
 	}
 }
