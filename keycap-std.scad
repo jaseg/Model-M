@@ -48,10 +48,15 @@ module clip(){
 	}
 }
 
+i=1;
+j=1;
+translate([i*(AX+WallThickness),j*(AY+WallThickness),0]){
+
 translate([(AX-CLIP_X)/2,WallThickness,0]) clip();
 translate([0,AY,0]) mirror([0,1,0]) translate([(AX-CLIP_X)/2,WallThickness,0]) clip();
 
 difference(){
 	keycap();
 	translate([WallThickness, WallThickness, 0]) scale(v=[1-2*WallThickness/AX, 1-2*WallThickness/AY, 1-WallThickness/H]) keycap();
+}
 }
