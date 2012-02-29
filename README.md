@@ -1,0 +1,1 @@
+There are just about 10 files since there are only about 10 different key types on the (my) keyboard, two of which (the standard keys and the wide modifier keys) have exchangeable key caps (which are also included as .scad files) .Currently you should be able to export the keycaps without problems. The unit mapping (scad-to-reallife) is 1:=1mm.
